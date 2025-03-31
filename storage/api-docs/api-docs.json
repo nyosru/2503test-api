@@ -26,6 +26,170 @@
                 }
             }
         },
+        "/api/bookings": {
+            "get": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Получить список всех бронирований",
+                "description": "Получить список всех бронирований",
+                "operationId": "4535e967ef15bc76dadf1efa40192f0d",
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение списка бронирований",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Booking"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Создать новое бронирование",
+                "description": "Создать новое бронирование",
+                "operationId": "43e6dcca842886074084b8db86af7802",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "resource_id",
+                                    "user_id",
+                                    "start_time",
+                                    "end_time"
+                                ],
+                                "properties": {
+                                    "resource_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-04-01T14:00:00Z"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-04-01T16:00:00Z"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Бронирование успешно создано",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Booking"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/api/bookings/{id}": {
+            "delete": {
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Удалить бронирование",
+                "description": "Удалить бронирование",
+                "operationId": "a53474f63d3a2fe2275fc0b6c8cc16cb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID бронирования",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Бронирование успешно удалено"
+                    },
+                    "404": {
+                        "description": "Бронирование не найдено"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
+        "/api/resources/{id}/bookings": {
+            "get": {
+                "tags": [
+                    "Resources"
+                ],
+                "summary": "Получить все бронирования выбранного ресурса",
+                "description": "Получить все бронирования выбранного ресурса",
+                "operationId": "c4188c086504ba06ae12f1f21009590b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID ресурса",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение списка бронирований",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Booking"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ресурс не найден"
+                    },
+                    "500": {
+                        "description": "Ошибка сервера"
+                    }
+                }
+            }
+        },
         "/api/resources": {
             "get": {
                 "tags": [
@@ -52,69 +216,10 @@
                     }
                 }
             }
-        },
-        "/api/bookings": {
-            "get": {
-                "tags": [
-                    "Bookings"
-                ],
-                "summary": "Получить список всех бронирований",
-                "description": "Получить список всех бронирований",
-                "operationId": "eb7c332e8ba161904a1c0071040f61a5",
-                "responses": {
-                    "200": {
-                        "description": "Успешное получение списка бронирований",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Booking"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка сервера"
-                    }
-                }
-            }
         }
     },
     "components": {
         "schemas": {
-            "Resource": {
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Example Resource"
-                    },
-                    "type": {
-                        "type": "string",
-                        "example": "Example Type"
-                    },
-                    "description": {
-                        "type": "string",
-                        "example": "This is an example resource."
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-31T18:00:00.000000Z"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-03-31T18:00:00.000000Z"
-                    }
-                },
-                "type": "object"
-            },
             "Booking": {
                 "properties": {
                     "id": {
@@ -151,17 +256,48 @@
                     }
                 },
                 "type": "object"
+            },
+            "Resource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Example Resource"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Example Type"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "This is an example resource."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-31T18:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-31T18:00:00.000000Z"
+                    }
+                },
+                "type": "object"
             }
         }
     },
     "tags": [
         {
-            "name": "Resources",
-            "description": "Resources"
-        },
-        {
             "name": "Bookings",
             "description": "Bookings"
+        },
+        {
+            "name": "Resources",
+            "description": "Resources"
         }
     ]
 }
