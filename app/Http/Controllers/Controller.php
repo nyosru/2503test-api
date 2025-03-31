@@ -9,10 +9,10 @@ namespace App\Http\Controllers;
  *      description="Описание API"
  * )
  * @OA\Server(
- *      url="https://example.com/api",
+ *      url="https://2503testapi.php-cat.com",
  *  )
  * @OA\Server(
- *      url="https://example.local/api",
+ *      url="https://2503testapi.local",
  *  )
  */
 abstract class Controller
