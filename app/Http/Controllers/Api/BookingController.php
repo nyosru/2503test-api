@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Contracts\BookingServiceInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
+use App\Services\BookingService;
 use Illuminate\Http\Request;
 
 /**
@@ -67,6 +70,11 @@ use Illuminate\Http\Request;
  */
 class BookingController extends Controller
 {
+
+    public function __construct(
+        protected BookingServiceInterface $bookingService
+    ) {}
+
     /**
      * Получить список всех бронирований
      *
@@ -92,12 +100,6 @@ class BookingController extends Controller
     {
         return BookingResource::collection(Booking::all());
     }
-
-    public function show(Booking $booking)
-    {
-        return new BookingResource($booking);
-    }
-
 
     /**
      * Создать новое бронирование
@@ -131,18 +133,11 @@ class BookingController extends Controller
      *     )
      * )
      */
-    public function store(Request $request)
+    public function store(StoreBookingRequest $request, BookingService $service)
     {
-        $validated = $request->validate([
-            'resource_id' => 'required|integer|exists:resources,id',
-            'user_id' => 'required|integer|exists:users,id',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-        ]);
-
-        $booking = Booking::create($validated);
-
-        return new BookingResource($booking);
+        $booking = $service->createBooking($request->validated());
+//        dd($booking);
+        return response(new BookingResource($booking), 201);
     }
 
     /**
